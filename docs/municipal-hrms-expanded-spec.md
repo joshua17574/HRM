@@ -8,6 +8,47 @@ This document provides expanded deliverables requested:
 
 ---
 
+## System Overview
+
+The municipal HRMS supports 500–2,000 employees across departments (administration, public works, fire/police, etc.) with a secure, mobile-responsive experience. It enforces RBAC across roles, integrates with identity providers, and applies civil service compliance rules with auditable workflows.
+
+```mermaid
+flowchart LR
+  subgraph Users
+    A[Employees\n(Admin, Public Works, Fire/Police)]
+    M[Mobile Devices]
+  end
+
+  A -->|HTTPS| FE[React Web App]
+  M -->|HTTPS| FE
+
+  FE -->|API| BE[Backend Services\n(Node.js + Django)]
+  BE -->|RBAC/AuthZ| IAM[Identity & Access\n(SSO/MFA/Directory)]
+  BE -->|Data Access| DB[(PostgreSQL)]
+
+  BE -->|Audit Logs| LOG[Immutable Audit Store]
+  BE -->|Compliance Rules| GOV[Policy Engine\n(Civil Service Rules)]
+
+  classDef secure fill:#e6f7ff,stroke:#1890ff,stroke-width:1px;
+  classDef data fill:#fff7e6,stroke:#fa8c16,stroke-width:1px;
+  classDef policy fill:#f6ffed,stroke:#52c41a,stroke-width:1px;
+
+  class FE,BE secure;
+  class DB data;
+  class GOV policy;
+```
+
+**Tech Stack**
+- Frontend: React (responsive UI for desktop and mobile)
+- Backend: Node.js + Django (API services, business logic, integrations)
+- Database: PostgreSQL (transactional HR data)
+
+**Key Principles**
+- Secure by default: TLS, MFA, least-privilege RBAC, audit logging
+- Mobile-responsive UX for field and desk users
+- Role-based access control aligned to municipal job classes
+- Compliance with civil service laws, retention rules, and auditability
+
 ## 1. Expanded OpenAPI Specification (Core Modules)
 
 **Base URL:** `/api/v1`  
